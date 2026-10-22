@@ -1,13 +1,53 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
 
 export default function Home() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    setSubmitted(false);
+    setError("");
+
+    const endpoint = process.env.NEXT_PUBLIC_MAIN_API;
+    if (!endpoint) {
+      setError("The API endpoint is not configured.");
+      return;
+    }
+
+    const formData = new FormData(event.currentTarget);
+    const payload = {
+      email: String(formData.get("email")),
+      name: String(formData.get("name")),
+      phone: String(formData.get("phone")),
+    };
+
+    setSubmitting(true);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}.`);
+      }
+
+      setSubmitted(true);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Unable to submit details.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -30,9 +70,12 @@ export default function Home() {
         <label htmlFor="phone">Phone</label>
         <input id="phone" name="phone" type="tel" required />
 
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Submitting..." : "Submit"}
+        </button>
       </form>
-      {submitted && <p>Details submitted.</p>}
+      {submitted && <p role="status">Details submitted.</p>}
+      {error && <p role="alert">{error}</p>}
       <style jsx>{`
         form {
           display: grid;
