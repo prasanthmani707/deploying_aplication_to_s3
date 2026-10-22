@@ -13,7 +13,7 @@ export default function Home() {
     setSubmitted(false);
     setError("");
 
-    const endpoint = process.env.NEXT_PUBLIC_MAIN_API;
+    const endpoint = process.env.NEXT_PUBLIC_MAIN_API_URL;
     if (!endpoint) {
       setError("The API endpoint is not configured.");
       return;
