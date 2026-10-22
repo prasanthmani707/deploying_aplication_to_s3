@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 export default function Home() {
   const [submitted, setSubmitted] = useState(false);
 
+  
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitted(true);
