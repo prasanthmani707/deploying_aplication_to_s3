@@ -30,4 +30,4 @@ jobs:
         run: |
           aws s3 sync ./ s3://${{ secrets.S3_BUCKET_NAME }}/static/
            --exclude ".git/*" \
-          --exclude ".github/*"
+           --exclude ".github/*"
