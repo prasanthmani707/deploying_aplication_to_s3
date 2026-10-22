@@ -13,7 +13,7 @@ export default function Home() {
     setSubmitted(false);
     setError("");
 
-    const endpoint = process.env.NEXT_PUBLIC_MAIN_API_URL;
+    const endpoint = "https://ap8kyc3c58.execute-api.us-east-1.amazonaws.com/User_Details"
     if (!endpoint) {
       setError("The API endpoint is not configured.");
       return;
